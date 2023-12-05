@@ -1,7 +1,6 @@
-# about 3 days
-_base_ = ["../../_base_/gdrn_base.py"]
+_base_ = ["../../../_base_/gdrn_base.py"]
 
-OUTPUT_DIR = "output/gdrn/fruitbin/convnext_a6_AugCosyAAEGray_BG05_mlL1_DMask_amodalClipBox_classAware_fruitbin"
+OUTPUT_DIR = "output/gdrn/fruitbinPbrSO/convnext_AugCosyAAEGray_DMask_amodalClipBox_fruitbin/banana1"
 INPUT = dict(
     DZI_PAD_SCALE=1.5,
     TRUNCATE_FG=True,
@@ -32,8 +31,8 @@ INPUT = dict(
 )
 
 SOLVER = dict(
-    IMS_PER_BATCH=48,
-    TOTAL_EPOCHS=40,  # 10
+    IMS_PER_BATCH=36,
+    TOTAL_EPOCHS=100,
     LR_SCHEDULER_NAME="flat_and_anneal",
     ANNEAL_METHOD="cosine",  # "cosine"
     ANNEAL_POINT=0.72,
@@ -43,13 +42,14 @@ SOLVER = dict(
     WARMUP_ITERS=1000,
 )
 
+
 DATASETS = dict(
-    TRAIN=("fruitbin",),
+    TRAIN=("fruitbin"),
     TEST=("fruitbin",),
-    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_ycbv_real_pbr_ycbv_bop_test.json",),
+    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_ycbv_pbr_ycbv_bop_test.json",),
     SYM_OBJS=[
         "lemon2",
-        "orange2",
+        "orange2"
     ],  # used for custom evalutor
 )
 
@@ -67,7 +67,6 @@ MODEL = dict(
     POSE_NET=dict(
         NAME="GDRN_double_mask",
         XYZ_ONLINE=True,
-        NUM_CLASSES=3,
         BACKBONE=dict(
             FREEZE=False,
             PRETRAINED="timm",
@@ -87,9 +86,6 @@ MODEL = dict(
                 in_dim=1024,  # this is num out channels of backbone conv feature
             ),
             NUM_REGIONS=64,
-            XYZ_CLASS_AWARE=True,
-            MASK_CLASS_AWARE=True,
-            REGION_CLASS_AWARE=True,
         ),
         PNP_NET=dict(
             INIT_CFG=dict(norm="GN", act="gelu"),
@@ -110,7 +106,7 @@ MODEL = dict(
             # full mask loss ---------------------------
             FULL_MASK_LOSS_TYPE="L1",  # L1 | BCE | CE
             FULL_MASK_LW=1.0,
-            
+
             REGION_LOSS_TYPE="CE",  # CE
             REGION_LOSS_MASK_GT="visib",  # trunc | visib | obj
             REGION_LW=1.0,
