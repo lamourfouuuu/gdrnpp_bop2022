@@ -64,10 +64,10 @@ def transform_instance_annotations(annotation, transforms, image_size, *, keypoi
     """
     im_H, im_W = image_size
     bbox = BoxMode.convert(annotation["bbox"], annotation["bbox_mode"], BoxMode.XYXY_ABS)
-    bbox_obj = BoxMode.convert(annotation["bbox_obj"], annotation["bbox_mode"], BoxMode.XYXY_ABS)
+    # bbox_obj = BoxMode.convert(annotation["bbox_obj"], annotation["bbox_mode"], BoxMode.XYXY_ABS)
     # Note that bbox is 1d (per-instance bounding box)
     annotation["bbox"] = np.array(transforms.apply_box([bbox])[0])
-    annotation["bbox_obj"] = np.array(transforms.apply_box([bbox_obj])[0])
+    # annotation["bbox_obj"] = np.array(transforms.apply_box([bbox_obj])[0])
     annotation["bbox_mode"] = BoxMode.XYXY_ABS
 
     if "segmentation" in annotation:

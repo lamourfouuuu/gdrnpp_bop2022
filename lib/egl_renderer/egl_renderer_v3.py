@@ -560,7 +560,7 @@ class EGLRenderer(object):
                 obj_path,
                 vertex_scale=vertex_scale,
                 is_textured=is_textured,
-                use_cache=self.use_cache,
+                use_cache=False,
                 cad_model_color=cad_model_color,
             )
             is_cad = mesh["is_cad"]

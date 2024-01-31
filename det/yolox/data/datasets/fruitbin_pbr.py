@@ -297,7 +297,8 @@ def get_fruitbin_metadata(obj_names, ref_key):
 
 
 fruitbin_model_root = "BOP_DATASETS/fruitbin/models/"
-FRUITBIN_OBJECTS = ["apple2", "apricot", "banana1", "kiwi1", "lemon2", "orange2", "peach1", "pear2"]
+# FRUITBIN_OBJECTS = ["apple2", "apricot", "banana1", "kiwi1", "lemon2", "orange2", "peach1", "pear2"]
+FRUITBIN_OBJECTS = ["banana1", "orange2", "pear2"]
 ################################################################################
 
 

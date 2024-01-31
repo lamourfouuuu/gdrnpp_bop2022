@@ -44,7 +44,7 @@ SOLVER = dict(
 
 
 DATASETS = dict(
-    TRAIN=("fruitbin"),
+    TRAIN=("fruitbin_train_pbr"),
     TEST=("fruitbin",),
     DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_ycbv_pbr_ycbv_bop_test.json",),
     SYM_OBJS=[
@@ -63,7 +63,7 @@ MODEL = dict(
     LOAD_DETS_TEST=True,
     PIXEL_MEAN=[0.0, 0.0, 0.0],
     PIXEL_STD=[255.0, 255.0, 255.0],
-    BBOX_TYPE="AMODAL_CLIP",  # VISIB or AMODAL
+    BBOX_TYPE="VISIB",  # VISIB or AMODAL
     POSE_NET=dict(
         NAME="GDRN_double_mask",
         XYZ_ONLINE=True,
