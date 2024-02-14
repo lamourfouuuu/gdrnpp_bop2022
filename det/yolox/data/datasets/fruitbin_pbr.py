@@ -66,7 +66,7 @@ class FRUITBIN_PBR_Dataset:
         self.obj2label = OrderedDict((obj, obj_id) for obj_id, obj in enumerate(self.objs))
         ##########################################################
 
-        self.scenes = [f"{i:06d}" for i in range(50)]
+        self.scenes = [f"{i:06d}" for i in range(1)]
 
     def __call__(self):
         """Load light-weight instance annotations of all images into a list of
@@ -113,11 +113,15 @@ class FRUITBIN_PBR_Dataset:
             cam_dict = mmcv.load(osp.join(scene_root, "scene_camera.json"))
 
             for str_im_id in tqdm(gt_dict, postfix=f"{scene_id}"):
+                rgb_files = os.listdir(osp.join(scene_root, "rgb"))
                 int_im_id = int(str_im_id)
-                rgb_path = osp.join(scene_root, "rgb/{:06d}.jpg").format(int_im_id)
-                assert osp.exists(rgb_path), rgb_path
+                for rgb_name in rgb_files:
+                    rgb_path = osp.join(scene_root, "rgb", rgb_name)
+                    assert osp.exists(rgb_path), rgb_path
 
-                depth_path = osp.join(scene_root, "depth/{:06d}.png".format(int_im_id))
+                depth_files = os.listdir(osp.join(scene_root, "depth"))
+                for depth_name in depth_files:
+                    depth_path = osp.join(scene_root, "depth", depth_name)
 
                 scene_im_id = f"{scene_id}/{int_im_id}"
 
@@ -151,7 +155,7 @@ class FRUITBIN_PBR_Dataset:
                     proj = proj[:2] / proj[2]
 
                     bbox_visib = gt_info_dict[str_im_id][anno_i]["bbox_visib"]
-                    bbox_obj = gt_info_dict[str_im_id][anno_i]["bbox_obj"]
+                    # bbox_obj = gt_info_dict[str_im_id][anno_i]["bbox_obj"]
                     x1, y1, w, h = bbox_visib
                     if self.filter_invalid:
                         if h <= 1 or w <= 1:
@@ -164,9 +168,9 @@ class FRUITBIN_PBR_Dataset:
                     )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:06d}_{:06d}.png".format(int_im_id, anno_i),
+                        "mask_visib/{:d}.png".format(int_im_id, anno_i),
                     )
-                    assert osp.exists(mask_file), mask_file
+                    # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file
                     # load mask visib  TODO: load both mask_visib and mask_full
                     mask_single = mmcv.imread(mask_visib_file, "unchanged")
@@ -177,26 +181,23 @@ class FRUITBIN_PBR_Dataset:
                     mask_rle = binary_mask_to_rle(mask_single, compressed=True)
 
                     # load mask full
-                    mask_full = mmcv.imread(mask_file, "unchanged")
-                    mask_full = mask_full.astype("bool")
-                    mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
+                    # mask_full = mmcv.imread(mask_file, "unchanged")
+                    # mask_full = mask_full.astype("bool")
+                    # mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
 
                     visib_fract = gt_info_dict[str_im_id][anno_i].get("visib_fract", 1.0)
 
-                    xyz_path = osp.join(
-                        self.xyz_root,
-                        f"{scene_id:06d}/{int_im_id:06d}_{anno_i:06d}-xyz.pkl",
-                    )
+                    xyz_path = osp.join(self.xyz_root, f"{scene_id:06d}/{int_im_id:06d}_{anno_i:06d}-xyz.pkl")
                     inst = {
                         "category_id": cur_label,  # 0-based label
-                        "bbox": bbox_obj,  # TODO: load both bbox_obj and bbox_visib
+                        "bbox": bbox_visib,  # TODO: load both bbox_obj and bbox_visib
                         "bbox_mode": BoxMode.XYWH_ABS,
                         "pose": pose,
                         "quat": quat,
                         "trans": t,
                         "centroid_2d": proj,  # absolute (cx, cy)
                         "segmentation": mask_rle,
-                        "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
+                        # "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
                         "visib_fract": visib_fract,
                         "xyz_path": xyz_path,
                     }
@@ -255,7 +256,7 @@ class FRUITBIN_PBR_Dataset:
             model = inout.load_ply(
                 osp.join(
                     self.models_root,
-                    f"{ref.fruitbin.obj2id[obj_name]}.ply", 
+                    f"obj_{ref.fruitbin.obj2id[obj_name]:06d}.ply", 
                 ),
                 vertex_scale=self.scale_to_meter,
             )
@@ -314,7 +315,7 @@ SPLITS_FRUITBIN_PBR = dict(
         with_depth=True,  # (load depth path here, but may not use it)
         height=480,
         width=640,
-        use_cache=True,
+        use_cache=False,
         num_to_load=-1,
         filter_invalid=True,
         ref_key="fruitbin",

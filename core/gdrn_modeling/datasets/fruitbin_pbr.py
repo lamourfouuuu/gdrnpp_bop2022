@@ -59,7 +59,7 @@ class FRUITBIN_PBR_Dataset:
         ##################################################
 
         # NOTE: careful! Only the selected objects
-        self.cat_ids = [cat_id for cat_id, obj_name in ref.fruitbin.id2obj.items() if obj_name in self.objs] 
+        self.cat_ids = [cat_id for cat_id, obj_name in ref.fruitbin.id2obj.items() if obj_name in self.objs]
         # map selected objs to [0, num_objs-1]
         self.cat2label = {v: i for i, v in enumerate(self.cat_ids)}  # id_map
         self.label2cat = {label: cat for cat, label in self.cat2label.items()}
@@ -298,7 +298,7 @@ def get_fruitbin_metadata(obj_names, ref_key):
     return meta
 
 
-fruitbin_model_root = "BOP_DATASETS/fruitbin/models/" #?? repository
+fruitbin_model_root = "BOP_DATASETS/fruitbin/models/"
 # FRUITBIN_OBJECTS = ["apple2", "apricot", "banana1", "kiwi1", "lemon2", "orange2", "peach1", "pear2"]
 FRUITBIN_OBJECTS = ["banana1", "orange2", "pear2"]
 ################################################################################
@@ -307,10 +307,10 @@ FRUITBIN_OBJECTS = ["banana1", "orange2", "pear2"]
 SPLITS_FRUITBIN_PBR = dict(
     fruitbin_train_pbr=dict(
         name="fruitbin_train_pbr",
-        objs=FRUITBIN_OBJECTS,  # selected objects 
+        objs=FRUITBIN_OBJECTS,  # selected objects
         dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr"),
-        models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"), 
-        xyz_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr/xyz_crop"), 
+        models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"),
+        xyz_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr/xyz_crop"),
         scale_to_meter=0.001,
         with_masks=True,  # (load masks but may not use it)
         with_depth=True,  # (load depth path here, but may not use it)
@@ -324,22 +324,21 @@ SPLITS_FRUITBIN_PBR = dict(
 )
 
 # single obj splits
-for obj in ref.fruitbin.objects: 
+for obj in ref.fruitbin.objects:
     for split in ["train_pbr"]:
-        name = "fruitbin_{}_{}".format(obj, split) #??
+        name = "fruitbin_{}_{}".format(obj, split)
         if split in ["train_pbr"]:
             filter_invalid = True
         elif split in ["test"]:
             filter_invalid = False
         else:
             raise ValueError("{}".format(split))
-        print(SPLITS_FRUITBIN_PBR)
         if name not in SPLITS_FRUITBIN_PBR:
             SPLITS_FRUITBIN_PBR[name] = dict(
                 name=name,
                 objs=[obj],  # only this obj
                 dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr"),
-                models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"), #??
+                models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"),
                 xyz_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr/xyz_crop"),
                 scale_to_meter=0.001,
                 with_masks=True,  # (load masks but may not use it)
@@ -376,7 +375,7 @@ def register_with_name_cfg(name, data_cfg=None):
         objs=used_cfg["objs"],
         eval_error_types=["ad", "rete", "proj"],
         evaluator_type="bop",
-        **get_fruitbin_metadata(obj_names=used_cfg["objs"], ref_key=used_cfg["ref_key"]), #??
+        **get_fruitbin_metadata(obj_names=used_cfg["objs"], ref_key=used_cfg["ref_key"]),
     )
 
 
@@ -479,7 +478,7 @@ if __name__ == "__main__":
     """Test the  dataset loader.
 
     Usage:
-        python -m this_module ycbv_pbr_train
+        python -m this_module fruitbin_pbr_train
     """
     from lib.vis_utils.image import grid_show
     from lib.utils.setup_logger import setup_my_logger

@@ -922,6 +922,8 @@ def build_gdrn_test_loader(cfg, dataset_name, train_objs=None, sampler=None, bat
     # load test detection results
     if cfg.MODEL.LOAD_DETS_TEST:
         det_files = cfg.DATASETS.DET_FILES_TEST
+        print("len(cfg.DATASETS.TEST) : ", len(cfg.DATASETS.TEST))
+        print("len(det_files) : ", len(det_files))
         assert len(cfg.DATASETS.TEST) == len(det_files)
         dataset_dicts = load_detections_into_dataset(
             dataset_name,

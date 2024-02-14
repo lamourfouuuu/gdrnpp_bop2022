@@ -125,7 +125,7 @@ class FRUITBIN_Dataset:
         num_instances_without_valid_box = 0
 
         for (scene_id, im_id) in tqdm(scene_im_ids):
-            rgb_path = osp.join(image_root, f"{scene_id:06d}/rgb/{im_id:06d}.png")
+            rgb_path = osp.join(image_root, f"{scene_id:06d}/rgb/{im_id:d}.png")
             assert osp.exists(rgb_path), rgb_path
             str_im_id = str(im_id)
 
@@ -186,7 +186,7 @@ class FRUITBIN_Dataset:
                 quat = mat2quat(pose[:3, :3])
 
                 ############# bbox ############################
-                bbox = info["bbox_obj"]
+                bbox = info["bbox_visib"]
                 x1, y1, w, h = bbox
                 x2 = x1 + w
                 y2 = y1 + h
@@ -206,7 +206,7 @@ class FRUITBIN_Dataset:
                 if self.with_masks:  # either list[list[float]] or dict(RLE)
                     mask_visib_file = osp.join(
                         image_root,
-                        f"{scene_id:06d}/mask_visib/{im_id:06d}_{anno_i:06d}.png",
+                        f"{scene_id:06d}/mask_visib/{im_id:d}.png",
                     )
                     assert osp.exists(mask_visib_file), mask_visib_file
                     mask = mmcv.imread(mask_visib_file, "unchanged")
@@ -216,16 +216,16 @@ class FRUITBIN_Dataset:
                         continue
                     mask_rle = binary_mask_to_rle(mask)
 
-                    mask_full_file = osp.join(
-                        image_root,
-                        f"{scene_id:06d}/mask/{im_id:06d}_{anno_i:06d}.png",
-                    )
-                    assert osp.exists(mask_full_file), mask_full_file
+                    # mask_full_file = osp.join(
+                    #     image_root,
+                    #     f"{scene_id:06d}/mask/{im_id:06d}_{anno_i:06d}.png",
+                    # )
+                    # assert osp.exists(mask_full_file), mask_full_file
 
                     # load mask full
-                    mask_full = mmcv.imread(mask_full_file, "unchanged")
-                    mask_full = mask_full.astype("bool")
-                    mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
+                    # mask_full = mmcv.imread(mask_full_file, "unchanged")
+                    # mask_full = mask_full.astype("bool")
+                    # mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
 
                 proj = (self.cam @ trans.T).T  # NOTE: use self.cam here
                 proj = proj[:2] / proj[2]
@@ -239,7 +239,7 @@ class FRUITBIN_Dataset:
                     "trans": trans,
                     "centroid_2d": proj,  # absolute (cx, cy)
                     "segmentation": mask_rle,
-                    "mask_full": mask_full_rle,
+                    # "mask_full": mask_full_rle,
                 }
 
                 if self.with_xyz:
@@ -408,7 +408,7 @@ default_cfg = dict(
     filter_invalid=True,
     ref_key="fruitbin",
 )
-SPLITS_fruitbin = {}
+SPLITS_FRUITBIN = {}
 update_cfgs = {
     "fruitbin_train_real": {
         "ann_files": [osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/image_sets/train.txt")],
@@ -615,7 +615,7 @@ def get_available_datasets():
 
 #### tests ###############################################
 def test_vis():
-    # python -m core.datasets.FRUITBIN_d2 fruitbin_test
+    # python -m core.datasets.fruitbin_d2 fruitbin_test
     dataset_name = sys.argv[1]
     meta = MetadataCatalog.get(dataset_name)
     t_start = time.perf_counter()
@@ -737,3 +737,4 @@ if __name__ == "__main__":
     register_with_name_cfg(sys.argv[1])
     print("dataset catalog: ", DatasetCatalog.list())
     test_vis()
+

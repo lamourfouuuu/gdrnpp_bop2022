@@ -32,8 +32,8 @@ INPUT = dict(
 )
 
 SOLVER = dict(
-    IMS_PER_BATCH=48,
-    TOTAL_EPOCHS=40,  # 10
+    IMS_PER_BATCH=36,
+    TOTAL_EPOCHS=1,  # 10
     LR_SCHEDULER_NAME="flat_and_anneal",
     ANNEAL_METHOD="cosine",  # "cosine"
     ANNEAL_POINT=0.72,
@@ -46,7 +46,7 @@ SOLVER = dict(
 DATASETS = dict(
     TRAIN=("fruitbin_train_pbr",),
     TEST=("fruitbin_test",),
-    # DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_ycbv_real_pbr_ycbv_bop_test.json",),
+    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_fruitbin_real_pbr_fruitbin_bop_test.json",),
     SYM_OBJS=[
         "lemon2",
         "orange2",
@@ -109,7 +109,7 @@ MODEL = dict(
             MASK_LW=1.0,
             # full mask loss ---------------------------
             FULL_MASK_LOSS_TYPE="L1",  # L1 | BCE | CE
-            FULL_MASK_LW=1.0,
+            FULL_MASK_LW=0.0,
             
             REGION_LOSS_TYPE="CE",  # CE
             REGION_LOSS_MASK_GT="visib",  # trunc | visib | obj
