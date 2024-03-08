@@ -209,33 +209,35 @@ for error_dir_path in p["error_dir_paths"]:
         for im_id, im_targets in scene_targets.items():
             scene_gt_curr[im_id] = scene_gt[im_id]
 
-            # Determine which GT poses are valid.
-            im_gt = scene_gt[im_id]
-            im_gt_info = scene_gt_info[im_id]
-            scene_gt_valid[im_id] = [True] * len(im_gt)
-            if p["visib_gt_min"] >= 0:
-                # All GT poses visible from at least 100 * p['visib_gt_min'] percent
-                # are considered valid.
-                for gt_id, gt in enumerate(im_gt):
-                    is_target = gt["obj_id"] in im_targets.keys()
-                    is_visib = im_gt_info[gt_id]["visib_fract"] >= p["visib_gt_min"]
-                    scene_gt_valid[im_id][gt_id] = is_target and is_visib
-            else:
-                # k most visible GT poses are considered valid, where k is given by
-                # the "inst_count" item loaded from "targets_filename".
-                gt_ids_sorted = sorted(
-                    range(len(im_gt)),
-                    key=lambda gt_id: im_gt_info[gt_id]["visib_fract"],
-                    reverse=True,
-                )
-                to_add = {obj_id: trg["inst_count"] for obj_id, trg in im_targets.items()}
-                for gt_id in gt_ids_sorted:
-                    obj_id = im_gt[gt_id]["obj_id"]
-                    if obj_id in to_add.keys() and to_add[obj_id] > 0:
-                        scene_gt_valid[im_id][gt_id] = True
-                        to_add[obj_id] -= 1
-                    else:
-                        scene_gt_valid[im_id][gt_id] = False
+            scene_gt_valid[im_id] = [True] * len(scene_gt[im_id])
+
+            # # Determine which GT poses are valid.
+            # im_gt = scene_gt[im_id]
+            # im_gt_info = scene_gt_info[im_id]
+            # scene_gt_valid[im_id] = [True] * len(im_gt)
+            # if p["visib_gt_min"] >= 0:
+            #     # All GT poses visible from at least 100 * p['visib_gt_min'] percent
+            #     # are considered valid.
+            #     for gt_id, gt in enumerate(im_gt):
+            #         is_target = gt["obj_id"] in im_targets.keys()
+            #         is_visib = im_gt_info[gt_id]["visib_fract"] >= p["visib_gt_min"]
+            #         scene_gt_valid[im_id][gt_id] = is_target and is_visib
+            # else:
+            #     # k most visible GT poses are considered valid, where k is given by
+            #     # the "inst_count" item loaded from "targets_filename".
+            #     gt_ids_sorted = sorted(
+            #         range(len(im_gt)),
+            #         key=lambda gt_id: im_gt_info[gt_id]["visib_fract"],
+            #         reverse=True,
+            #     )
+            #     to_add = {obj_id: trg["inst_count"] for obj_id, trg in im_targets.items()}
+            #     for gt_id in gt_ids_sorted:
+            #         obj_id = im_gt[gt_id]["obj_id"]
+            #         if obj_id in to_add.keys() and to_add[obj_id] > 0:
+            #             scene_gt_valid[im_id][gt_id] = True
+            #             to_add[obj_id] -= 1
+            #         else:
+            #             scene_gt_valid[im_id][gt_id] = False
 
         # Load pre-calculated errors of the pose estimates w.r.t. the GT poses.
         scene_errs_path = p["error_tpath"].format(

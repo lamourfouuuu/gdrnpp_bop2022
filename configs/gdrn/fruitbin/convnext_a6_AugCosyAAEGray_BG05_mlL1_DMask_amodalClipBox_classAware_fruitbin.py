@@ -32,8 +32,8 @@ INPUT = dict(
 )
 
 SOLVER = dict(
-    IMS_PER_BATCH=36,
-    TOTAL_EPOCHS=1,  # 10
+    IMS_PER_BATCH=35,
+    TOTAL_EPOCHS=40,  # 10
     LR_SCHEDULER_NAME="flat_and_anneal",
     ANNEAL_METHOD="cosine",  # "cosine"
     ANNEAL_POINT=0.72,
@@ -46,11 +46,11 @@ SOLVER = dict(
 DATASETS = dict(
     TRAIN=("fruitbin_train_pbr",),
     TEST=("fruitbin_test",),
-    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_fruitbin_real_pbr_fruitbin_bop_test.json",),
-    SYM_OBJS=[
-        "lemon2",
-        "orange2",
-    ],  # used for custom evalutor
+    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/next_corrected_yolox_x_yghh640_fruitbin_pbr_fruitbin_bop_test.json",), 
+    # SYM_OBJS=[
+    #     "pear2",
+    #     "orange2",
+    # ],  # used for custom evalutoryolox_x_640_fruitbin_pbr_fruitbin_bop_test
 )
 
 DATALOADER = dict(
@@ -67,7 +67,7 @@ MODEL = dict(
     POSE_NET=dict(
         NAME="GDRN_double_mask",
         XYZ_ONLINE=True,
-        NUM_CLASSES=3,
+        NUM_CLASSES=1,
         BACKBONE=dict(
             FREEZE=False,
             PRETRAINED="timm",

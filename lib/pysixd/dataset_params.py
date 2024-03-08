@@ -48,6 +48,13 @@ def get_camera_params(datasets_path, dataset_name, cam_type=None):
             cam_type = "uw"
         cam_filename = "camera_{}.json".format(cam_type)
 
+    elif dataset_name == "fruitbin":
+        
+        # Includes images captured by two sensors. Use the "UW" sensor as default.
+        if cam_type is None:
+            cam_type = "uw"
+        cam_filename = "camera_{}.json".format(cam_type)
+
     else:
         cam_filename = "camera.json"
 
@@ -90,6 +97,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
         "hb": list(range(1, 34)),  # Full HB dataset.
         "ycbv": list(range(1, 22)),
         "ycbvposecnn": list(range(1, 22)),
+        "fruitbin": [3],
         "hope": list(range(1, 29)),
     }[dataset_name]
 
@@ -128,6 +136,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
         "hb": [6, 10, 11, 12, 13, 14, 18, 24, 29],
         "ycbv": [1, 13, 14, 16, 18, 19, 20, 21],  # bop symmetric objs
         "ycbvposecnn": [13, 16, 19, 20, 21],  # posecnn symmetric objs
+        "fruitbin": [],
         "hope": None,  # Not defined yet.
     }[dataset_name]
 
@@ -382,6 +391,27 @@ def get_split_params(datasets_path, dataset_name, split, split_type=None):
             p["depth_range"] = (612.92, 1243.59)
             p["azimuth_range"] = (0, 2 * math.pi)
             p["elev_range"] = (-1.2788, 1.1291)  # (-73.27, 64.69) [deg].
+
+    # fruitbin
+    elif dataset_name == "fruitbin":
+        if split == "train" and split_type is None:
+            split_type = "real"
+
+        if split == "train":
+            p["scene_ids"] = {
+                "real": None,
+                "pbr": [0], 
+                "synt": None,
+            }[split_type]
+        elif split == "test":
+            p["scene_ids"] = [0]
+
+        p["im_size"] = (640, 480)
+
+        if split == "test":
+            p["depth_range"] = None     #(612.92, 1243.59)
+            p["azimuth_range"] = None   #(0, 2 * math.pi)
+            p["elev_range"] = None      #(-1.2788, 1.1291)  # (-73.27, 64.69) [deg].
 
     # HOPE.
     elif dataset_name == "hope":

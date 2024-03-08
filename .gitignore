@@ -4,6 +4,7 @@ core/csrc/uncertainty_pnp/ceres/
 # output dir
 /data
 /datasets
+
 *.so.*
 *.tar.gz
 *.egg-info*
@@ -56,4 +57,3 @@ events.out.tfevents*
 /models
 
 #external/*
-/bop_renderer

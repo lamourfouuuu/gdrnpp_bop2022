@@ -127,10 +127,10 @@ class FRUITBIN_BOP_TEST_Dataset:
             for scene_id, im_id in tqdm(scene_im_ids):
                 str_im_id = str(im_id)
                 scene_root = osp.join(self.dataset_root, f"{scene_id:06d}")
-                rgb_path = osp.join(scene_root, "rgb/{:06d}.png").format(im_id)
+                rgb_path = osp.join(scene_root, "rgb/{:d}.png").format(im_id)
                 assert osp.exists(rgb_path), rgb_path
 
-                depth_path = osp.join(scene_root, "depth/{:06d}.png".format(im_id))
+                depth_path = osp.join(scene_root, "depth/{:d}.png".format(im_id))
 
                 scene_id = int(rgb_path.split("/")[-3])
 
@@ -164,22 +164,22 @@ class FRUITBIN_BOP_TEST_Dataset:
                     proj = proj[:2] / proj[2]
 
                     bbox_visib = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_visib"]
-                    bbox_obj = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_obj"]
+                    # bbox_obj = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_obj"]
                     x1, y1, w, h = bbox_visib
                     if self.filter_invalid:
                         if h <= 1 or w <= 1:
                             self.num_instances_without_valid_box += 1
                             continue
 
-                    mask_file = osp.join(
-                        scene_root,
-                        "mask/{:06d}_{:06d}.png".format(im_id, anno_i),
-                    )
+                    # mask_file = osp.join(
+                    #     scene_root,
+                    #     "mask/{:06d}_{:06d}.png".format(im_id, anno_i),
+                    # )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:06d}_{:06d}.png".format(im_id, anno_i),
+                        "mask_visib/{:d}.png".format(im_id, anno_i),
                     )
-                    assert osp.exists(mask_file), mask_file
+                    # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file
                     # load mask visib
                     mask_single = mmcv.imread(mask_visib_file, "unchanged")
@@ -190,20 +190,20 @@ class FRUITBIN_BOP_TEST_Dataset:
                     mask_rle = binary_mask_to_rle(mask_single, compressed=True)
 
                     # load mask full
-                    mask_full = mmcv.imread(mask_file, "unchanged")
-                    mask_full = mask_full.astype("bool")
-                    mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
+                    # mask_full = mmcv.imread(mask_file, "unchanged")
+                    # mask_full = mask_full.astype("bool")
+                    # mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
 
                     inst = {
                         "category_id": cur_label,  # 0-based label
-                        "bbox": bbox_obj,  # TODO: load both bbox_obj and bbox_visib
+                        "bbox": bbox_visib,  # TODO: load both bbox_obj and bbox_visib
                         "bbox_mode": BoxMode.XYWH_ABS,
                         "pose": pose,
                         "quat": quat,
                         "trans": t,
                         "centroid_2d": proj,  # absolute (cx, cy)
                         "segmentation": mask_rle,
-                        "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
+                        # "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
                     }
 
                     model_info = self.models_info[str(obj_id)]
@@ -316,7 +316,7 @@ SPLITS_FRUITBIN = dict(
         height=480,
         width=640,
         cache_dir=osp.join(PROJ_ROOT, ".cache"),
-        use_cache=True,
+        use_cache=False,
         num_to_load=-1,
         filter_invalid=False,
         ref_key="fruitbin",
@@ -342,7 +342,7 @@ for obj in ref.fruitbin.objects:
             height=480,
             width=640,
             cache_dir=osp.join(PROJ_ROOT, ".cache"),
-            use_cache=True,
+            use_cache=False,
             num_to_load=-1,
             filter_invalid=False,
             ref_key="fruitbin",

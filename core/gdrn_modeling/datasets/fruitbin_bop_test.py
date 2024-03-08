@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 DATASETS_ROOT = osp.normpath(osp.join(PROJ_ROOT, "datasets"))
 
 
-class YCBV_BOP_TEST_Dataset:
-    """ycbv bop test."""
+class FRUITBIN_BOP_TEST_Dataset:
+    """fruitbin bop test."""
 
     def __init__(self, data_cfg):
         """
@@ -43,8 +43,8 @@ class YCBV_BOP_TEST_Dataset:
 
         self.ann_file = data_cfg["ann_file"]  # json file with scene_id and im_id items
 
-        self.dataset_root = data_cfg["dataset_root"]  # BOP_DATASETS/ycbv/test
-        self.models_root = data_cfg["models_root"]  # BOP_DATASETS/ycbv/models
+        self.dataset_root = data_cfg["dataset_root"]  # BOP_DATASETS/fruitbin/test
+        self.models_root = data_cfg["models_root"]  # BOP_DATASETS/fruitbin/models
         self.scale_to_meter = data_cfg["scale_to_meter"]  # 0.001
 
         self.with_masks = data_cfg["with_masks"]  # True (load masks but may not use it)
@@ -60,7 +60,7 @@ class YCBV_BOP_TEST_Dataset:
         ##################################################
 
         # NOTE: careful! Only the selected objects
-        self.cat_ids = [cat_id for cat_id, obj_name in ref.ycbv.id2obj.items() if obj_name in self.objs]
+        self.cat_ids = [cat_id for cat_id, obj_name in ref.fruitbin.id2obj.items() if obj_name in self.objs]
         # map selected objs to [0, num_objs-1]
         self.cat2label = {v: i for i, v in enumerate(self.cat_ids)}  # id_map
         self.label2cat = {label: cat for cat, label in self.cat2label.items()}
@@ -152,7 +152,7 @@ class YCBV_BOP_TEST_Dataset:
                 insts = []
                 for anno_i, anno in enumerate(gt_dicts[scene_id][str_im_id]):
                     obj_id = anno["obj_id"]
-                    if ref.ycbv.id2obj[obj_id] not in self.select_objs:
+                    if ref.fruitbin.id2obj[obj_id] not in self.select_objs:
                         continue
                     cur_label = self.cat2label[obj_id]  # 0-based label
                     R = np.array(anno["cam_R_m2c"], dtype="float32").reshape(3, 3)
@@ -164,22 +164,22 @@ class YCBV_BOP_TEST_Dataset:
                     proj = proj[:2] / proj[2]
 
                     bbox_visib = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_visib"]
-                    bbox_obj = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_obj"]
+                    # bbox_obj = gt_info_dicts[scene_id][str_im_id][anno_i]["bbox_obj"]
                     x1, y1, w, h = bbox_visib
                     if self.filter_invalid:
                         if h <= 1 or w <= 1:
                             self.num_instances_without_valid_box += 1
                             continue
 
-                    mask_file = osp.join(
-                        scene_root,
-                        "mask/{:06d}_{:06d}.png".format(im_id, anno_i),
-                    )
+                    # mask_file = osp.join(
+                    #     scene_root,
+                    #     "mask/{:06d}_{:06d}.png".format(im_id, anno_i),
+                    # )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:06d}_{:06d}.png".format(im_id, anno_i),
+                        "mask_visib/{:06d}.png".format(im_id, anno_i),
                     )
-                    assert osp.exists(mask_file), mask_file
+                    # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file
                     # load mask visib
                     mask_single = mmcv.imread(mask_visib_file, "unchanged")
@@ -190,21 +190,21 @@ class YCBV_BOP_TEST_Dataset:
                     mask_rle = binary_mask_to_rle(mask_single, compressed=True)
 
                     # load mask full
-                    mask_full = mmcv.imread(mask_file, "unchanged")
-                    mask_full = mask_full.astype("bool")
-                    mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
+                    # mask_full = mmcv.imread(mask_file, "unchanged")
+                    # mask_full = mask_full.astype("bool")
+                    # mask_full_rle = binary_mask_to_rle(mask_full, compressed=True)
 
                     inst = {
                         "category_id": cur_label,  # 0-based label
                         "bbox": bbox_visib,
-                        "bbox_obj": bbox_obj,
+                        # "bbox_obj": bbox_obj,
                         "bbox_mode": BoxMode.XYWH_ABS,
                         "pose": pose,
                         "quat": quat,
                         "trans": t,
                         "centroid_2d": proj,  # absolute (cx, cy)
                         "segmentation": mask_rle,
-                        "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
+                        # "mask_full": mask_full_rle,  # TODO: load as mask_full, rle
                     }
 
                     model_info = self.models_info[str(obj_id)]
@@ -261,7 +261,7 @@ class YCBV_BOP_TEST_Dataset:
             model = inout.load_ply(
                 osp.join(
                     self.models_root,
-                    f"obj_{ref.ycbv.obj2id[obj_name]:06d}.ply",
+                    f"obj_{ref.fruitbin.obj2id[obj_name]:06d}.ply",
                 ),
                 vertex_scale=self.scale_to_meter,
             )
@@ -281,7 +281,7 @@ class YCBV_BOP_TEST_Dataset:
 ########### register datasets ############################################################
 
 
-def get_ycbv_metadata(obj_names, ref_key):
+def get_fruitbin_metadata(obj_names, ref_key):
     """task specific metadata."""
     data_ref = ref.__dict__[ref_key]
 
@@ -304,49 +304,49 @@ def get_ycbv_metadata(obj_names, ref_key):
 
 ################################################################################
 
-SPLITS_YCBV = dict(
-    ycbv_bop_test=dict(
-        name="ycbv_bop_test",
-        dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/test"),
-        models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/models"),
-        objs=ref.ycbv.objects,  # selected objects
-        ann_file=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/test_targets_bop19.json"),
+SPLITS_FRUITBIN = dict(
+    fruitbin_bop_test=dict(
+        name="fruitbin_bop_test",
+        dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/test"),
+        models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"),
+        objs=ref.fruitbin.objects,  # selected objects
+        ann_file=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/test_targets_bop19.json"),
         scale_to_meter=0.001,
         with_masks=True,  # (load masks but may not use it)
         with_depth=True,  # (load depth path here, but may not use it)
         height=480,
         width=640,
         cache_dir=osp.join(PROJ_ROOT, ".cache"),
-        use_cache=True,
+        use_cache=False,
         num_to_load=-1,
         filter_invalid=False,
-        ref_key="ycbv",
+        ref_key="fruitbin",
     )
 )
 
 
 # single objs (num_class is from all objs)
-for obj in ref.ycbv.objects:
-    name = "ycbv_bop_{}_test".format(obj)
+for obj in ref.fruitbin.objects:
+    name = "fruitbin_bop_{}_test".format(obj)
     select_objs = [obj]
-    if name not in SPLITS_YCBV:
-        SPLITS_YCBV[name] = dict(
+    if name not in SPLITS_FRUITBIN:
+        SPLITS_FRUITBIN[name] = dict(
             name=name,
-            dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/test"),
-            models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/models"),
+            dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/test"),
+            models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"),
             objs=[obj],  # only this obj
             select_objs=select_objs,  # selected objects
-            ann_file=osp.join(DATASETS_ROOT, "BOP_DATASETS/ycbv/test_targets_bop19.json"),
+            ann_file=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/test_targets_bop19.json"),
             scale_to_meter=0.001,
             with_masks=True,  # (load masks but may not use it)
             with_depth=True,  # (load depth path here, but may not use it)
             height=480,
             width=640,
             cache_dir=osp.join(PROJ_ROOT, ".cache"),
-            use_cache=True,
+            use_cache=False,
             num_to_load=-1,
             filter_invalid=False,
-            ref_key="ycbv",
+            ref_key="fruitbin",
         )
 
 
@@ -360,25 +360,25 @@ def register_with_name_cfg(name, data_cfg=None):
             data_cfg can be set in cfg.DATA_CFG.name
     """
     dprint("register dataset: {}".format(name))
-    if name in SPLITS_YCBV:
-        used_cfg = SPLITS_YCBV[name]
+    if name in SPLITS_FRUITBIN:
+        used_cfg = SPLITS_FRUITBIN[name]
     else:
         assert data_cfg is not None, f"dataset name {name} is not registered"
         used_cfg = data_cfg
-    DatasetCatalog.register(name, YCBV_BOP_TEST_Dataset(used_cfg))
+    DatasetCatalog.register(name, FRUITBIN_BOP_TEST_Dataset(used_cfg))
     # something like eval_types
     MetadataCatalog.get(name).set(
-        id="ycbv",  # NOTE: for pvnet to determine module
+        id="fruitbin",  # NOTE: for pvnet to determine module
         ref_key=used_cfg["ref_key"],
         objs=used_cfg["objs"],
         eval_error_types=["ad", "rete", "proj"],
         evaluator_type="bop",
-        **get_ycbv_metadata(obj_names=used_cfg["objs"], ref_key=used_cfg["ref_key"]),
+        **get_fruitbin_metadata(obj_names=used_cfg["objs"], ref_key=used_cfg["ref_key"]),
     )
 
 
 def get_available_datasets():
-    return list(SPLITS_YCBV.keys())
+    return list(SPLITS_FRUITBIN.keys())
 
 
 #### tests ###############################################
@@ -440,7 +440,7 @@ if __name__ == "__main__":
     """Test the  dataset loader.
 
     Usage:
-        python -m core.datasets.ycbv_bop_test dataset_name
+        python -m core.datasets.fruitbin_bop_test dataset_name
     """
     from lib.vis_utils.image import grid_show
     from lib.utils.setup_logger import setup_my_logger

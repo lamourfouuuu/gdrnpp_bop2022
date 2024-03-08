@@ -125,7 +125,7 @@ class FRUITBIN_Dataset:
         num_instances_without_valid_box = 0
 
         for (scene_id, im_id) in tqdm(scene_im_ids):
-            rgb_path = osp.join(image_root, f"{scene_id:06d}/rgb/{im_id:d}.png")
+            rgb_path = osp.join(image_root, f"{scene_id:06d}/rgb/{im_id:06d}.png")
             assert osp.exists(rgb_path), rgb_path
             str_im_id = str(im_id)
 
@@ -206,7 +206,7 @@ class FRUITBIN_Dataset:
                 if self.with_masks:  # either list[list[float]] or dict(RLE)
                     mask_visib_file = osp.join(
                         image_root,
-                        f"{scene_id:06d}/mask_visib/{im_id:d}.png",
+                        f"{scene_id:06d}/mask_visib/{im_id:06d}.png",
                     )
                     assert osp.exists(mask_visib_file), mask_visib_file
                     mask = mmcv.imread(mask_visib_file, "unchanged")

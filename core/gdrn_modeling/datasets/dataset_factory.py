@@ -62,6 +62,7 @@ _DSET_MOD_NAMES = [
     "itodd_d2",
     "fruitbin_d2",
     "fruitbin_pbr",
+    "fruitbin_test"
 ]
 
 logger = logging.getLogger(__name__)

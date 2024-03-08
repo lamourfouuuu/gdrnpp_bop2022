@@ -43,7 +43,7 @@ class FRUITBIN_PBR_Dataset:
         )
         self.xyz_root = data_cfg.get("xyz_root", osp.join(self.dataset_root, "xyz_crop"))
         assert osp.exists(self.dataset_root), self.dataset_root
-        self.models_root = data_cfg["models_root"]  # BOP_DATASETS/ycbv/models
+        self.models_root = data_cfg["models_root"]  # BOP_DATASETS/fruitbin/models
         self.scale_to_meter = data_cfg["scale_to_meter"]  # 0.001
 
         self.with_masks = data_cfg["with_masks"]
@@ -111,16 +111,13 @@ class FRUITBIN_PBR_Dataset:
             gt_dict = mmcv.load(osp.join(scene_root, "scene_gt.json"))
             gt_info_dict = mmcv.load(osp.join(scene_root, "scene_gt_info.json"))
             cam_dict = mmcv.load(osp.join(scene_root, "scene_camera.json"))
-            for str_im_id in tqdm(gt_dict, postfix=f"{scene_id}"):
-                rgb_files = os.listdir(osp.join(scene_root, "rgb"))
-                int_im_id = int(str_im_id)
-                for rgb_name in rgb_files:
-                    rgb_path = osp.join(scene_root, "rgb", rgb_name)
-                    assert osp.exists(rgb_path), rgb_path
 
-                depth_files = os.listdir(osp.join(scene_root, "depth"))
-                for depth_name in depth_files:
-                    depth_path = osp.join(scene_root, "depth", depth_name)
+            for str_im_id in tqdm(gt_dict, postfix=f"{scene_id}"):
+                int_im_id = int(str_im_id)
+                rgb_path = osp.join(scene_root, "rgb/{:06d}.png").format(int_im_id)
+                assert osp.exists(rgb_path), rgb_path
+
+                depth_path = osp.join(scene_root, "depth/{:06d}.png".format(int_im_id))
 
                 scene_im_id = f"{scene_id}/{int_im_id}"
 
@@ -167,7 +164,7 @@ class FRUITBIN_PBR_Dataset:
                     )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:d}.png".format(int_im_id, anno_i),
+                        "mask_visib/{:06d}.png".format(int_im_id),
                     )
                     # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file
@@ -299,15 +296,13 @@ def get_fruitbin_metadata(obj_names, ref_key):
 
 
 fruitbin_model_root = "BOP_DATASETS/fruitbin/models/"
-# FRUITBIN_OBJECTS = ["apple2", "apricot", "banana1", "kiwi1", "lemon2", "orange2", "peach1", "pear2"]
-FRUITBIN_OBJECTS = ["banana1", "orange2", "pear2"]
 ################################################################################
 
 
 SPLITS_FRUITBIN_PBR = dict(
     fruitbin_train_pbr=dict(
         name="fruitbin_train_pbr",
-        objs=FRUITBIN_OBJECTS,  # selected objects
+        objs=ref.fruitbin.objects,  # selected objects
         dataset_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr"),
         models_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/models"),
         xyz_root=osp.join(DATASETS_ROOT, "BOP_DATASETS/fruitbin/train_pbr/xyz_crop"),

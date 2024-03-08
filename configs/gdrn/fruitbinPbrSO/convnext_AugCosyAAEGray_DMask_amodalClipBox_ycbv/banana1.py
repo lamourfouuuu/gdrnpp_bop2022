@@ -47,15 +47,15 @@ DATASETS = dict(
     TRAIN=("fruitbin_train_pbr"),
     TEST=("fruitbin",),
     # DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_ycbv_pbr_ycbv_bop_test.json",),
-    SYM_OBJS=[
-        "lemon2",
-        "orange2"
-    ],  # used for custom evalutor
+    # SYM_OBJS=[
+    #     "pear2",
+    #     "orange2"
+    # ],  # used for custom evalutor
 )
 
 DATALOADER = dict(
     # Number of data loading threads
-    NUM_WORKERS=8,
+    NUM_WORKERS=1,
     FILTER_VISIB_THR=0.3,
 )
 

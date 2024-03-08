@@ -41,21 +41,15 @@ model_scaled_simple_dir = osp.join(dataset_root, "models_rescaled")  # m, .obj
 vertex_scale = 0.001
 
 # object info
-# id2obj = {
-#     1: "apple2",
-#     2: "apricot",
-#     3: "banana1",
-#     4: "kiwi1",
-#     5: "lemon2",
-#     6: "orange2",
-#     7: "peach1",
-#     8: "pear2"
-# }
-
 id2obj = {
-    1: "banana1",
-    2: "orange2",
-    3: "pear2"
+    # 1: "apple2",
+    # 2: "apricot",
+    3: "banana1",
+    # 4: "kiwi1",
+    # 5: "lemon2",
+    # 6: "orange2",
+    # 7: "peach1",
+    # 8: "pear2"
 }
 
 objects = list(id2obj.values())

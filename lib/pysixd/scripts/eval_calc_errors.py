@@ -47,6 +47,7 @@ p = {
         "tudl": 15,
         "tyol": 15,
         "ycbv": 15,
+        "fruitbin": 15,
         "hope": 15,
     },
     "vsd_taus": list(np.arange(0.05, 0.51, 0.05)),
@@ -298,7 +299,7 @@ for result_filename in p["result_filenames"]:
 
             # Load the depth image if VSD is selected as the pose error function.
             depth_im = None
-            if p["error_type"] == "vsd":
+            if p["error_type"] == "vsd":              
                 depth_path = dp_split["depth_tpath"].format(scene_id=scene_id, im_id=im_id)
                 depth_im = inout.load_depth(depth_path)
                 depth_im *= scene_camera[im_id]["depth_scale"]  # Convert to [mm].
