@@ -56,3 +56,4 @@ events.out.tfevents*
 /models
 
 #external/*
+/bop_renderer
