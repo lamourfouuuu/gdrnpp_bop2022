@@ -67,13 +67,6 @@ pred_path = "/gdrnpp_bop2022/output/gdrn/fruitbin/convnext_a6_AugCosyAAEGray_BG0
 vis_dir = "/gdrnpp_bop2022/output/gdrn/fruitbin/convnext_a6_AugCosyAAEGray_BG05_mlL1_DMask_amodalClipBox_classAware_fruitbin/inference_/fruitbin_vis_gt_pred_full"
 mmcv.mkdir_or_exist(vis_dir)
 
-transformation_matrix = np.array([
-    [1.0000000, 0.0000000, 1.0000000],
-    [1.0000000, 1.0000000, 0.0000000],
-    [0.0000000, 1.0000000, 1.0000000]
-
-])
-
 print(pred_path)
 preds_csv = load_predicted_csv(pred_path)
 preds = {}
@@ -136,7 +129,6 @@ for d in tqdm(dset_dicts):
 
         gt_Rs.append(Rs[anno_i])
         gt_ts.append(transes[anno_i])
-
     if scene_im_id not in preds:
         print(scene_im_id, "not detected")
         continue
@@ -165,9 +157,6 @@ for d in tqdm(dset_dicts):
 
     gt_poses = [np.hstack([_R, _t.reshape(3, 1)]) for _R, _t in zip(gt_Rs, gt_ts)]
     est_poses = [np.hstack([_R, _t.reshape(3, 1)]) for _R, _t in zip(est_Rs, est_ts)]
-
-    print("gt_poses : ",gt_poses)
-    print("est_poses : ",est_poses)
 
     ren.render(
         est_labels,
