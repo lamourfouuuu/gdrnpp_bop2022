@@ -20,7 +20,7 @@ train.amp.enabled = True
 model.backbone.depth = 1.33
 model.backbone.width = 1.25
 
-model.head.num_classes = 1
+model.head.num_classes = 8
 
 train.init_checkpoint = "pretrained_models/yolox/yolox_x.pth"
 
@@ -83,7 +83,7 @@ train.checkpointer = dict(period=2, max_to_keep=10)
 test.test_dataset_names = DATASETS.TEST
 test.augment = True
 test.scales = (1, 0.75, 0.83, 1.12, 1.25)
-test.conf_thr = 0.1
+test.conf_thr = 0.001
 
 dataloader.test = [
     L(build_yolox_test_loader)(

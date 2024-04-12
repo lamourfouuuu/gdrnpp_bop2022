@@ -42,14 +42,14 @@ vertex_scale = 0.001
 
 # object info
 id2obj = {
-    # 1: "apple2",
-    # 2: "apricot",
+    1: "apple2",
+    2: "apricot",
     3: "banana1",
-    # 4: "kiwi1",
-    # 5: "lemon2",
-    # 6: "orange2",
-    # 7: "peach1",
-    # 8: "pear2"
+    4: "kiwi1",
+    5: "lemon2",
+    6: "orange2",
+    7: "peach1",
+    8: "pear2"
 }
 
 objects = list(id2obj.values())

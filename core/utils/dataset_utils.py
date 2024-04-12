@@ -194,7 +194,7 @@ def load_detections_into_dataset(
         obj_annotations = {obj: [] for obj in objs}
         for det in dets_i:
             obj_id = det["obj_id"]
-            bbox_est = det["bbox_est"]  # xywh
+            bbox = det["bbox"]  # xywh
             time = det.get("time", 0.0)
             score = det.get("score", 1.0)
             if score < score_thr:
@@ -211,7 +211,7 @@ def load_detections_into_dataset(
             label = objs.index(obj_name)
             inst = {
                 "category_id": label,
-                "bbox_est": bbox_est,
+                "bbox": bbox,
                 "bbox_mode": BoxMode.XYWH_ABS,
                 "score": score,
                 "time": time,
@@ -292,7 +292,7 @@ def load_init_poses_into_dataset(
             obj_id = det["obj_id"]
             # NOTE: need to prepare init poses into this format
             pose_est = np.array(det["pose_est"], dtype=np.float32).reshape(3, 4)
-            bbox_est = det.get("bbox_est", None)  # xywh or None
+            bbox = det.get("bbox", None)  # xywh or None
             time = det.get("time", 0.0)
             score = det.get("score", 1.0)
             if score < score_thr:
@@ -314,8 +314,8 @@ def load_init_poses_into_dataset(
                 "time": time,
                 "model_info": models_info[str(obj_id)],  # TODO: maybe just load this in the main function
             }
-            if bbox_est is not None:  # if None, compute bboxes from poses and 3D points later
-                inst["bbox_est"] = bbox_est
+            if bbox is not None:  # if None, compute bboxes from poses and 3D points later
+                inst["bbox"] = bbox
                 inst["bbox_mode"] = BoxMode.XYWH_ABS
             obj_annotations[obj_name].append(inst)
         for obj, cur_annos in obj_annotations.items():
@@ -400,7 +400,7 @@ def load_catre_init_into_dataset(
                 "time": time,
             }
             if with_bboxes:
-                inst["bbox_est"] = det["bbox_est"]
+                inst["bbox"] = det["bbox"]
                 inst["bbox_mode"] = BoxMode.XYXY_ABS
             if with_masks:
                 inst["segmentation"] = det["segmentation"]  # overwrite gt masks

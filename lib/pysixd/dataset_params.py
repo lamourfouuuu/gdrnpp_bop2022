@@ -97,7 +97,7 @@ def get_model_params(datasets_path, dataset_name, model_type=None):
         "hb": list(range(1, 34)),  # Full HB dataset.
         "ycbv": list(range(1, 22)),
         "ycbvposecnn": list(range(1, 22)),
-        "fruitbin": [3],
+        "fruitbin": list(range(1, 9)),
         "hope": list(range(1, 29)),
     }[dataset_name]
 
@@ -400,11 +400,11 @@ def get_split_params(datasets_path, dataset_name, split, split_type=None):
         if split == "train":
             p["scene_ids"] = {
                 "real": None,
-                "pbr": [0], 
+                "pbr": list(range(8)), 
                 "synt": None,
             }[split_type]
         elif split == "test":
-            p["scene_ids"] = [0]
+            p["scene_ids"] = list(range(8))
 
         p["im_size"] = (640, 480)
 

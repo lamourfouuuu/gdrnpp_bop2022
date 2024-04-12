@@ -127,10 +127,10 @@ class FRUITBIN_BOP_TEST_Dataset:
             for scene_id, im_id in tqdm(scene_im_ids):
                 str_im_id = str(im_id)
                 scene_root = osp.join(self.dataset_root, f"{scene_id:06d}")
-                rgb_path = osp.join(scene_root, "rgb/{:d}.png").format(im_id)
+                rgb_path = osp.join(scene_root, "rgb/{:06d}.png").format(im_id)
                 assert osp.exists(rgb_path), rgb_path
 
-                depth_path = osp.join(scene_root, "depth/{:d}.png".format(im_id))
+                depth_path = osp.join(scene_root, "depth/{:06d}.png".format(im_id))
 
                 scene_id = int(rgb_path.split("/")[-3])
 
@@ -177,7 +177,7 @@ class FRUITBIN_BOP_TEST_Dataset:
                     # )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:d}.png".format(im_id, anno_i),
+                        "mask_visib/{:06d}.png".format(im_id, anno_i),
                     )
                     # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file

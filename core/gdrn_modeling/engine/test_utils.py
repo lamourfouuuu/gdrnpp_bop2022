@@ -267,7 +267,7 @@ def summary_scores(
 
         # mean of selected objs
         num_objs = len(sel_obj_ids)
-        if num_objs > 1:
+        if num_objs >= 1:
             sel_obj_recalls = [_recall for _id, _recall in score_dict["obj_recalls"].items() if int(_id) in sel_obj_ids]
             if not is_weighted_average_metric(error_type):
                 mean_obj_recall = np.mean(sel_obj_recalls)

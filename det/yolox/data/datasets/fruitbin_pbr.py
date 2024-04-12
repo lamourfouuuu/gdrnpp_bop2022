@@ -66,7 +66,7 @@ class FRUITBIN_PBR_Dataset:
         self.obj2label = OrderedDict((obj, obj_id) for obj_id, obj in enumerate(self.objs))
         ##########################################################
 
-        self.scenes = [f"{i:06d}" for i in range(1)]
+        self.scenes = [f"{i:06d}" for i in range(8)]
 
     def __call__(self):
         """Load light-weight instance annotations of all images into a list of
@@ -114,10 +114,10 @@ class FRUITBIN_PBR_Dataset:
 
             for str_im_id in tqdm(gt_dict, postfix=f"{scene_id}"):
                 int_im_id = int(str_im_id)
-                rgb_path = osp.join(scene_root, "rgb/{:d}.png").format(int_im_id)
+                rgb_path = osp.join(scene_root, "rgb/{:06d}.png").format(int_im_id)
                 assert osp.exists(rgb_path), rgb_path
 
-                depth_path = osp.join(scene_root, "depth/{:d}.png".format(int_im_id))
+                depth_path = osp.join(scene_root, "depth/{:06d}.png".format(int_im_id))
 
                 scene_im_id = f"{scene_id}/{int_im_id}"
 
@@ -164,7 +164,7 @@ class FRUITBIN_PBR_Dataset:
                     )
                     mask_visib_file = osp.join(
                         scene_root,
-                        "mask_visib/{:d}.png".format(int_im_id),
+                        "mask_visib/{:06d}.png".format(int_im_id),
                     )
                     # assert osp.exists(mask_file), mask_file
                     assert osp.exists(mask_visib_file), mask_visib_file

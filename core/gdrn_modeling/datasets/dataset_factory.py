@@ -29,6 +29,7 @@ from core.gdrn_modeling.datasets import (
     itodd_d2,
     fruitbin_d2,
     fruitbin_pbr,
+    fruitbin_bop_test,
 )
 
 
@@ -62,7 +63,7 @@ _DSET_MOD_NAMES = [
     "itodd_d2",
     "fruitbin_d2",
     "fruitbin_pbr",
-    "fruitbin_test"
+    "fruitbin_bop_test",
 ]
 
 logger = logging.getLogger(__name__)

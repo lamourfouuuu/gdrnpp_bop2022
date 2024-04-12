@@ -66,4 +66,4 @@ def save_json(path, content, sort=False):
             json.dump(content, f, sort_keys=True)
 
 
-save_json("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_fruitbin_pbr_fruitbin_bop_test_1.json", outs)
+save_json("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/yolox_x_640_fruitbin_pbr_fruitbin_bop_test.json", outs)

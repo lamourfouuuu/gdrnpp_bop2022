@@ -7,6 +7,7 @@ from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.structures import BoxMode
 import torch
 import pandas as pd
+# import json
 
 cur_dir = osp.dirname(osp.abspath(__file__))
 sys.path.insert(0, osp.join(cur_dir, "../../../../"))
@@ -24,7 +25,14 @@ colors = colormap(rgb=False, maximum=255)
 
 # object info
 id2obj = {
-        3: "banana1",
+    1: "apple2",
+    2: "apricot",
+    3: "banana1",
+    4: "kiwi1",
+    5: "lemon2",
+    6: "orange2",
+    7: "peach1",
+    8: "pear2",
 }
 objects = list(id2obj.values())
 
@@ -55,7 +63,7 @@ texture_paths = [osp.join(model_dir, f"obj_{obj_id:06d}.png") for obj_id in id2o
 ren = EGLRenderer(
     model_paths,
     texture_paths=texture_paths,
-    vertex_scale=1,
+    vertex_scale=0.001,
     use_cache=True,
     width=width,
     height=height,
@@ -74,8 +82,8 @@ for item in preds_csv:
     im_key = "{}/{}".format(item["scene_id"], item["im_id"])
     item["time"] = float(item["time"])
     item["score"] = float(item["score"])
-    item["R"] = (parse_Rt_in_csv(item["R"]).reshape(3, 3)) @ transformation_matrix
-    item["t"] = (parse_Rt_in_csv(item["t"]) / 1000) 
+    item["R"] = parse_Rt_in_csv(item["R"]).reshape(3, 3)
+    item["t"] = parse_Rt_in_csv(item["t"]) / 1000
     item["obj_name"] = id2obj[item["obj_id"]]
     if im_key not in preds:
         preds[im_key] = []

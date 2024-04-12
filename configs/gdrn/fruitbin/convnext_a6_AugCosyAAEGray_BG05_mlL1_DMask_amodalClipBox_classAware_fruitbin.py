@@ -32,8 +32,8 @@ INPUT = dict(
 )
 
 SOLVER = dict(
-    IMS_PER_BATCH=35,
-    TOTAL_EPOCHS=40,  # 10
+    IMS_PER_BATCH=33,
+    TOTAL_EPOCHS=30,  # 10
     LR_SCHEDULER_NAME="flat_and_anneal",
     ANNEAL_METHOD="cosine",  # "cosine"
     ANNEAL_POINT=0.72,
@@ -46,11 +46,15 @@ SOLVER = dict(
 DATASETS = dict(
     TRAIN=("fruitbin_train_pbr",),
     TEST=("fruitbin_test",),
-    DET_FILES_TEST=("datasets/BOP_DATASETS/fruitbin/test/test_bboxes/next_corrected_yolox_x_yghh640_fruitbin_pbr_fruitbin_bop_test.json",), 
-    # SYM_OBJS=[
-    #     "pear2",
-    #     "orange2",
-    # ],  # used for custom evalutoryolox_x_640_fruitbin_pbr_fruitbin_bop_test
+    DET_FILES_TEST=("/gdrnpp_bop2022/datasets/BOP_DATASETS/fruitbin/test/test_bboxes/gt_all_fruits_fruitbin_pbr_fruitbin_bop_test.json",), 
+    SYM_OBJS=[
+        "apple2",
+        "apricot",
+        "kiwi1",
+        "lemon2",
+        "orange2",
+        "peach1",
+    ],  # used for custom evalutoryolox_x_640_fruitbin_pbr_fruitbin_bop_test
 )
 
 DATALOADER = dict(
@@ -67,7 +71,7 @@ MODEL = dict(
     POSE_NET=dict(
         NAME="GDRN_double_mask",
         XYZ_ONLINE=True,
-        NUM_CLASSES=1,
+        NUM_CLASSES=8,
         BACKBONE=dict(
             FREEZE=False,
             PRETRAINED="timm",
@@ -137,4 +141,4 @@ VAL = dict(
     USE_BOP=True,  # whether to use bop toolkit
 )
 
-TEST = dict(EVAL_PERIOD=0, VIS=False, TEST_BBOX_TYPE="est")  # gt | est
+TEST = dict(EVAL_PERIOD=0, VIS=False, TEST_BBOX_TYPE="gt")  # gt | est
